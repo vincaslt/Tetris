@@ -42,11 +42,13 @@ public class GamePlayState extends BasicGameState {
 		
 		//Temp:
 		graphics.setColor(Color.white);
-		graphics.drawString("Left: <-", 50, 50);
-		graphics.drawString("Right: ->", 50, 70);
-		graphics.drawString("Rotate Left: ,", 50, 90);
-		graphics.drawString("Rotate Right: .", 50, 110);
-
+		graphics.drawString("Right: Right arrow", 50, 50);
+		graphics.drawString("Left: Left arrow", 50, 70);
+		graphics.drawString("Speed up: Down arrow", 50, 90);
+		graphics.drawString("Rotate Right: . or Up arrow", 50, 110);
+		graphics.drawString("Rotate Left: ,", 50, 130);
+		graphics.drawString("Drop block: Space", 50, 150);
+		
 		TextureImpl.bindNone();
 	}
 
