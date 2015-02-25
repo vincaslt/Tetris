@@ -5,14 +5,15 @@ import com.vincas.Tetris.gameobjects.GameField;
 import org.newdawn.slick.Input;
 
 public class InputManager {
-	
 	GameField field;
+	GameManager gameManager;
 	
-	public InputManager(GameField field) {
+	public InputManager(GameField field, GameManager gameManager) {
 		this.field = field;
+		this.gameManager = gameManager;
 	}
 
-	public void keyPressed(int key, char c) {
+	public void keyPressed(int key) {
 		switch (key) {
 			case Input.KEY_UP:
 			case Input.KEY_COMMA:
@@ -27,7 +28,18 @@ public class InputManager {
 			case Input.KEY_RIGHT:
 				handleMoveRight();
 				break;
+			case Input.KEY_SPACE:
+				while (gameManager.triggerGravity());
+				break;
+			case Input.KEY_DOWN:
+				gameManager.speedUp();
+				break;
 		}
+	}
+	
+	public void keyReleased(int key) {
+		if (key == Input.KEY_DOWN)
+			gameManager.normalizeSpeed();
 	}
 	
 	private void handleMoveLeft() {

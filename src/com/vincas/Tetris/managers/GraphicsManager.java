@@ -35,7 +35,7 @@ public class GraphicsManager {
 		for (int r = 0; r < 4; r++) {
 			for (int c = 0; c < 4; c++) {
 				Square square = field.getActiveBlock().getActiveSheet()[r][c];
-				if (square != null) {
+				if (square != null && (r + field.getActivePosition().getY()) >= 0) {
 					gfx.setColor(square.getColor());
 					gfx.fillRect(field.getX() + (c + field.getActivePosition().getX()) * Tetris.SQUARE_SIZE,
 						field.getY() + (r + field.getActivePosition().getY()) * Tetris.SQUARE_SIZE,

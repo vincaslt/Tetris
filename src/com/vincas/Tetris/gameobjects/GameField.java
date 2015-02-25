@@ -2,6 +2,7 @@ package com.vincas.Tetris.gameobjects;
 
 import com.vincas.Tetris.gameobjects.blocks.Block;
 import com.vincas.Tetris.gameobjects.blocks.Square;
+import com.vincas.Tetris.utils.GameOverException;
 
 import org.lwjgl.util.Point;
 
@@ -62,13 +63,17 @@ public class GameField {
 	 * @param y
 	 * @param block
 	 */
-	public void mapBlock(int x, int y, Block block) {
-		if (block == null) return;
+	public void mapBlock(int x, int y, Block block) throws GameOverException {
+		if (block == null) return; //TODO: create custom exception
 		
 		for (int r = 0; r < 4; r++) {
 			for (int c = 0; c < 4; c++) {
-				if (block.getActiveSheet()[r][c] != null)
-					squares[y + r][x + c] = block.getActiveSheet()[r][c];
+				if (block.getActiveSheet()[r][c] != null) {
+					if ((y + r) < 0)
+						throw new GameOverException();
+					else
+						squares[y + r][x + c] = block.getActiveSheet()[r][c];
+				}
 			}
 		}
 	}
@@ -80,14 +85,14 @@ public class GameField {
 	 * @param block 
 	 * @param position
 	 */
-	public void addActiveBlock(Point position, Block block) {
+	public void addActiveBlock(Point position, Block block) throws GameOverException{
 		if (activePosition != null)
 			mapBlock(activePosition.getX(), activePosition.getY(), activeBlock);
 		activeBlock = block;
 		activePosition = position;
 	}
 	
-	public void addActiveBlock(int x, int y, Block block) {
+	public void addActiveBlock(int x, int y, Block block) throws GameOverException {
 		addActiveBlock(new Point(x, y), block);
 	}
 }

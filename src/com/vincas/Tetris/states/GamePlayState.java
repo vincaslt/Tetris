@@ -9,7 +9,6 @@ import com.vincas.Tetris.managers.InputManager;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.opengl.TextureImpl;
 import org.newdawn.slick.state.BasicGameState;
@@ -29,18 +28,10 @@ public class GamePlayState extends BasicGameState {
 	@Override
 	public void init(GameContainer gameContainer, StateBasedGame stateBasedGame) throws SlickException {
 		gameField = new GameField(10, 20, 400, 10);
-		/*Block activeBlock = new JBlock(Color.blue);
-		gameField.addActiveBlock(2, 0, activeBlock);
-		gameField.mapBlock(3, 18, new ZBlock(Color.red));
-		gameField.mapBlock(-1, 15, new LBlock(Color.orange));
-		gameField.mapBlock(6, 18, new IBlock(Color.cyan));
-		gameField.mapBlock(1, 15, new TBlock(Color.magenta));
-		gameField.mapBlock(7, 17, new SBlock(Color.green));
-		gameField.mapBlock(0, 17, new OBlock(Color.yellow));*/
-
-		gameManager = new GameManager(gameField);
+		
+		gameManager = new GameManager(stateBasedGame, gameField);
 		graphicsManager = new GraphicsManager(gameField);
-		inputManager = new InputManager(gameField);
+		inputManager = new InputManager(gameField, gameManager);
 		
 		gameManager.spawnNewBlock();
 	}
@@ -66,9 +57,11 @@ public class GamePlayState extends BasicGameState {
 
 	@Override
 	public void keyPressed(int key, char c) {
-		inputManager.keyPressed(key, c);
-		if (key == Input.KEY_SPACE) {
-			gameManager.spawnNewBlock();
-		}
+		inputManager.keyPressed(key);
+	}
+
+	@Override
+	public void keyReleased(int key, char c) {
+		inputManager.keyReleased(key);
 	}
 }
