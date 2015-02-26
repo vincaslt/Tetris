@@ -1,5 +1,6 @@
 package com.vincas.Tetris.gameobjects;
 
+import com.vincas.Tetris.gameobjects.blocks.ActiveBlock;
 import com.vincas.Tetris.gameobjects.blocks.Block;
 import com.vincas.Tetris.gameobjects.blocks.Square;
 import com.vincas.Tetris.utils.GameOverException;
@@ -11,9 +12,8 @@ public class GameField {
 	private int height;
 	private int x;
 	private int y;
-	
-	private Point activePosition;
-	private Block activeBlock;
+
+	private ActiveBlock<Block> activeBlock;
 	private Square[][] squares;
 
 	public GameField(int width, int height, int x, int y) {
@@ -21,22 +21,15 @@ public class GameField {
 		this.height = height;
 		this.x = x;
 		this.y = y;
-		
+
 		activeBlock = null;
 		squares = new Square[height][width];
-	}
-
-	/**
-	 * @return position of the active block
-	 */
-	public Point getActivePosition() {
-		return activePosition;
 	}
 
 	public int getX() {
 		return x;
 	}
-	
+
 	public int getY() {
 		return y;
 	}
@@ -49,7 +42,7 @@ public class GameField {
 		return height;
 	}
 
-	public Block getActiveBlock() {
+	public ActiveBlock<Block> getActiveBlock() {
 		return activeBlock;
 	}
 
@@ -58,21 +51,19 @@ public class GameField {
 	}
 
 	/**
-	 * Maps a block on the field at the position specified through x and y parameters.
-	 * @param x
-	 * @param y
-	 * @param block
+	 * Maps an active block on the field.
 	 */
-	public void mapBlock(int x, int y, Block block) throws GameOverException {
-		if (block == null) return;
-		
+	public void mapActiveBlock() throws GameOverException {
+		if (activeBlock == null) return;
+
 		for (int r = 0; r < 4; r++) {
 			for (int c = 0; c < 4; c++) {
-				if (block.getActiveSheet()[r][c] != null) {
-					if ((y + r) < 0)
+				if (activeBlock.getActiveSheet()[r][c] != null) {
+					if ((activeBlock.getPosition().getY() + r) < 0)
 						throw new GameOverException();
 					else
-						squares[y + r][x + c] = block.getActiveSheet()[r][c];
+						squares[activeBlock.getPosition().getY() + r][activeBlock.getPosition().getX() + c]
+							= activeBlock.getActiveSheet()[r][c];
 				}
 			}
 		}
@@ -81,17 +72,15 @@ public class GameField {
 	/**
 	 * Adds a new block to a field. The new block is set to active,
 	 * and last active block is mapped to the field.
-	 * 
-	 * @param block 
-	 * @param position
+	 *
+	 * @param block - block to become an active block
 	 */
-	public void addActiveBlock(Point position, Block block) throws GameOverException{
-		if (activePosition != null)
-			mapBlock(activePosition.getX(), activePosition.getY(), activeBlock);
-		activeBlock = block;
-		activePosition = position;
+	public void addActiveBlock(Point position, Block block) throws GameOverException {
+		if (activeBlock != null)
+			mapActiveBlock();
+		activeBlock = new ActiveBlock<Block>(position, block);
 	}
-	
+
 	public void addActiveBlock(int x, int y, Block block) throws GameOverException {
 		addActiveBlock(new Point(x, y), block);
 	}

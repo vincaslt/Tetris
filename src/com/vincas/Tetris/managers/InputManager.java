@@ -43,11 +43,11 @@ public class InputManager {
 	}
 	
 	private void handleMoveLeft() {
-		field.getActivePosition().translate(-1, 0);
+		field.getActiveBlock().translate(-1, 0);
 	}
 	
 	private void handleMoveRight() {
-		field.getActivePosition().translate(1, 0);
+		field.getActiveBlock().translate(1, 0);
 	}
 	
 	private void handleRotateLeft() {

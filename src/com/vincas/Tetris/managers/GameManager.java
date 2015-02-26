@@ -2,6 +2,7 @@ package com.vincas.Tetris.managers;
 
 import com.vincas.Tetris.Tetris;
 import com.vincas.Tetris.gameobjects.GameField;
+import com.vincas.Tetris.gameobjects.blocks.ActiveBlock;
 import com.vincas.Tetris.gameobjects.blocks.Block;
 import com.vincas.Tetris.gameobjects.blocks.IBlock;
 import com.vincas.Tetris.gameobjects.blocks.JBlock;
@@ -61,9 +62,9 @@ public class GameManager {
 	}
 	
 	public boolean testGravity() {
-		Block block = field.getActiveBlock();
-		int row = field.getActivePosition().getY();
-		int col = field.getActivePosition().getX();
+		ActiveBlock<Block> block = field.getActiveBlock();
+		int row = field.getActiveBlock().getPosition().getY();
+		int col = field.getActiveBlock().getPosition().getX();
 
 		for (int r = 0; r < 4; r++) {
 			for (int c = 0; c < 4; c++) {
@@ -80,7 +81,7 @@ public class GameManager {
 	public boolean triggerGravity() {
 		try {
 			if (testGravity()) {
-				field.getActivePosition().translate(0, 1);
+				field.getActiveBlock().getPosition().translate(0, 1);
 				return true;
 			} else {
 				spawnNewBlock();
@@ -120,7 +121,8 @@ public class GameManager {
 		}
 		spawnNewBlock(3, -2, block);
 		triggerGravity();
-		triggerGravity();
+		if (!(block instanceof IBlock)) // Some hardcode :(
+			triggerGravity();
 	}
 
 	public void spawnNewBlock(int x, int y, Block block) {
@@ -129,7 +131,6 @@ public class GameManager {
 	}
 	
 	private void handleGameOver() {
-		System.out.println("Game Over");
 		game.enterState(Tetris.STATE_GAMEOVER, new FadeOutTransition(), new FadeInTransition());
 		isActive = false;
 	}
