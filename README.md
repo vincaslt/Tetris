@@ -11,3 +11,5 @@ Setup:
     `-Djava.library.path=lib/natives-windows`
     
 Read slick2d wiki first if something is not clear.
+
+Latest working compiled version can be downloaded here: http://puu.sh/gdVSB/cab2fd4ef1.jar (compiled for windows only)
