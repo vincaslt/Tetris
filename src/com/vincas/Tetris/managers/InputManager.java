@@ -51,10 +51,10 @@ public class InputManager {
 	}
 	
 	private void handleRotateLeft() {
-		field.getActiveBlock().rotateLeft();
+		field.getActiveBlock().rotateLeft(field);
 	}
 
 	private void handleRotateRight() {
-		field.getActiveBlock().rotateRight();
+		field.getActiveBlock().rotateRight(field);
 	}
 }

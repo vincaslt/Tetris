@@ -2,7 +2,6 @@ package com.vincas.Tetris.managers;
 
 import com.vincas.Tetris.Tetris;
 import com.vincas.Tetris.gameobjects.GameField;
-import com.vincas.Tetris.gameobjects.blocks.ActiveBlock;
 import com.vincas.Tetris.gameobjects.blocks.Block;
 import com.vincas.Tetris.gameobjects.blocks.IBlock;
 import com.vincas.Tetris.gameobjects.blocks.JBlock;
@@ -60,37 +59,57 @@ public class GameManager {
 			timer.resetTime();
 		}
 	}
-	
-	public boolean testGravity() {
-		ActiveBlock<Block> block = field.getActiveBlock();
-		int row = field.getActiveBlock().getPosition().getY();
-		int col = field.getActiveBlock().getPosition().getX();
-
-		for (int r = 0; r < 4; r++) {
-			for (int c = 0; c < 4; c++) {
-				if (block.getActiveSheet()[r][c] != null && row + r + 1 >= 0 &&
-					(row + r + 1 >= field.getHeight() ||
-						field.getSquares()[row + r + 1][col + c] != null)) {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
 
 	public boolean triggerGravity() {
 		try {
-			if (testGravity()) {
-				field.getActiveBlock().getPosition().translate(0, 1);
+			if(field.getActiveBlock().translate(field, 0, 1)) {
 				return true;
-			} else {
+			}
+			else {
 				spawnNewBlock();
+				checkRows();
 				return false;
 			}
 		} catch(GameOverException e) {
 			handleGameOver();
 			return false;
 		}
+	}
+	
+	private void checkRows() {
+		boolean trigger;
+		for (int r = 0; r < field.getHeight(); r++) {
+			trigger = true;
+			for (int c = 0; c < field.getWidth(); c++) {
+				if (field.getSquares()[r][c] == null) {
+					trigger = false;
+					break;
+				}
+			}
+			if (trigger)
+				removeRow(r);
+		}
+	}
+	
+	private void removeRow(int row) {
+		if (row < 0) return;
+		
+		for (int c = 0; c < field.getWidth(); c++) {
+			field.getSquares()[row][c] = null;
+		}
+		pullDown(row);
+	}
+	
+	private void pullDown(int row) {
+		if (row - 1 < 0) return;
+		
+		for (int c = 0; c < field.getWidth(); c++) {
+			if (field.getSquares()[row - 1][c] != null) {
+				field.getSquares()[row][c] = field.getSquares()[row - 1][c];
+			}
+		}
+		
+		removeRow(row - 1);
 	}
 
 	public void spawnNewBlock() {
@@ -119,17 +138,13 @@ public class GameManager {
 				block = new JBlock(Color.blue);
 				break;
 		}
-		spawnNewBlock(3, -2, block);
+		field.addActiveBlock(3, -2, block);
+		timer.resetTime();
 		triggerGravity();
 		if (!(block instanceof IBlock)) // Some hardcode :(
 			triggerGravity();
 	}
 
-	public void spawnNewBlock(int x, int y, Block block) {
-		field.addActiveBlock(x, y, block);
-		timer.resetTime();
-	}
-	
 	private void handleGameOver() {
 		game.enterState(Tetris.STATE_GAMEOVER, new FadeOutTransition(), new FadeInTransition());
 		isActive = false;
