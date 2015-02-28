@@ -10,15 +10,20 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.opengl.TextureImpl;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
+
+import java.awt.Font;
 
 public class GamePlayState extends BasicGameState {
 	GameField gameField;
 	InputManager inputManager;
 	GraphicsManager graphicsManager;
 	GameManager gameManager;
+	
+	TrueTypeFont textFont;
 
 	@Override
 	public int getID() {
@@ -34,14 +39,17 @@ public class GamePlayState extends BasicGameState {
 		inputManager = new InputManager(gameField, gameManager);
 		
 		gameManager.spawnNewBlock();
+		textFont = new TrueTypeFont(new Font("Verdana", Font.PLAIN, 14), true);
 	}
 
 	@Override
 	public void render(GameContainer gameContainer, StateBasedGame stateBasedGame, Graphics graphics) throws SlickException {
 		graphicsManager.render(graphics);
+		graphicsManager.drawScore(graphics, gameManager.getScores().getScore());
 		
 		//Temp:
 		graphics.setColor(Color.white);
+		graphics.setFont(textFont);
 		graphics.drawString("Right: Right arrow", 50, 50);
 		graphics.drawString("Left: Left arrow", 50, 70);
 		graphics.drawString("Speed up: Down arrow", 50, 90);
